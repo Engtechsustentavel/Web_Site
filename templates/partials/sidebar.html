@@ -1,0 +1,20 @@
+<aside class="sidebar">
+  <img
+    src="{{ url_for('static', filename='img/sutram.png') }}"
+    class="logo-top"
+    alt="SUTRAM"
+  />
+
+  <nav class="menu">
+    <a href="{{ url_for('cadastro') }}" class="btn-menu vermelho">CADASTRO</a>
+    <a href="{{ url_for('dados') }}" class="btn-menu laranja">DADOS</a>
+    <a href="{{ url_for('painel') }}" class="btn-menu verde">PAINEL</a>
+    <a href="{{ url_for('usuarios') }}" class="btn-menu roxo">USUÁRIOS</a>
+  </nav>
+
+  <img
+    src="{{ url_for('static', filename='img/prefeitura.png') }}"
+    class="logo-bottom"
+    alt="Prefeitura"
+  />
+</aside>

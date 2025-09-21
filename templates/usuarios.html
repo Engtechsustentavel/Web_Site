@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="pt-br"><head>
+<meta charset="utf-8"><title>Usuários - SUTRAM</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style/style.css') }}"></head>
+<body><div class="sidebar">
+  <div class="logo"><img src="{{ url_for('static', filename='img/sutram.png') }}" alt="Sutram"></div>
+  <a href="{{ url_for('cadastro') }}" class="cadastro">CADASTRO</a>
+  <a href="{{ url_for('dados') }}" class="dados">DADOS</a>
+  <a href="{{ url_for('painel') }}" class="painel">PAINEL</a>
+  <a href="{{ url_for('usuarios') }}" class="usuarios">USUÁRIOS</a>
+  <div class="logo-bottom"><img src="{{ url_for('static', filename='img/prefeitura.png') }}" alt="Prefeitura"></div>
+</div>
+<div class="content"><div class="container card">
+  <h2>Gerenciamento de Usuários</h2>
+  {% with msgs = get_flashed_messages(with_categories=True) %}
+    {% for cat,msg in msgs %}<div class="alert {'ok' if cat=='ok' else 'error'}">{{ msg }}</div>{% endfor %}
+  {% endwith %}
+  <form method="post" class="grid-2">
+    <div><label>Usuário</label><input name="usuario" required></div>
+    <div><label>Senha</label><input type="password" name="senha" required></div>
+    <div><button class="btn" type="submit">Cadastrar</button></div>
+  </form><br>
+  <table class="table"><thead><tr><th>ID</th><th>Usuário</th></tr></thead><tbody>
+    {% for u in usuarios %}<tr><td>{{ u['id'] }}</td><td>{{ u['usuario'] }}</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+</body></html>

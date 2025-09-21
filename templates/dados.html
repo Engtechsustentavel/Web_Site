@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>SUTRAM - Dados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Seu CSS -->
+    <link
+      href="{{ url_for('static', filename='style/style.css') }}"
+      rel="stylesheet"
+    />
+
+    <!-- DataTables CSS (tema padrão). Se usa Bootstrap, troque pelo CSS do tema correspondente -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"
+    />
+  </head>
+
+  <body class="bg-amarelo">
+    {% include 'partials/sidebar.html' %}
+
+    <div class="page">
+      <section class="page-card">
+        <h2 class="titulo">Gerenciamento de Dados</h2>
+
+        <!-- BARRA DE AÇÕES -->
+        <div class="flex wrap gap" style="margin-bottom: 12px">
+          <!-- IMPORTAÇÃO: agora via <form> que envia para a sua rota -->
+          <!-- Ajuste a action="/importar" se sua rota tiver outro path -->
+          <form
+            id="form-import"
+            action="/importar"
+            method="POST"
+            enctype="multipart/form-data"
+            class="flex gap"
+          >
+            <input
+              type="file"
+              name="arquivo"
+              id="arquivo_csv"
+              class="input-arquivo"
+              required
+            />
+            <button type="submit" class="btn btn-primario">Importar</button>
+          </form>
+
+          <div class="flex gap">
+            <!-- Ajuste as URLs de exportação conforme seu backend -->
+            <a class="btn btn-sucesso" href="/exportar-excel">Exportar Excel</a>
+            <a class="btn btn-info" href="/exportar-csv">Exportar CSV</a>
+          </div>
+
+          <div class="flex gap">
+            <button class="btn" id="btn-recarregar">Recarregar</button>
+            <button class="btn btn-perigo" id="btn-apagar-tudo">
+              Apagar Tudo
+            </button>
+          </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="card">
+          <div class="tabela-responsiva">
+            <table id="tabela-dados" class="display stripe" style="width: 100%">
+              <thead>
+                <tr>
+                  <th>Registro</th>
+                  <th>Data Entrada</th>
+                  <th>Solicitante</th>
+                  <th>Endereço</th>
+                  <th>Zona</th>
+                  <th>Objeto</th>
+                  <th>Quantidade</th>
+                  <th>Mês</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- jQuery + DataTables -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+      // ====== DataTables (carrega do seu backend) ======
+      // Ajuste 'ajax: "/dados.json"' para a URL que o seu backend já expõe
+      // O JSON esperado (exemplo):
+      // { "data": [ { "registro": 1, "data_entrada": "30/01/2025", "solicitante": "...", "endereco": "...", "zona":"SUL", "objeto":"...", "quantidade":3, "mes":"JANEIRO","status":"CONCLUÍDO" }, ... ] }
+      let tabela;
+
+      $(function () {
+        tabela = $("#tabela-dados").DataTable({
+          ajax: {
+            url: "/dados.json", // <-- ajuste se necessário
+            dataSrc: "data",
+          },
+          columns: [
+            { data: "registro" },
+            { data: "data_entrada" },
+            { data: "solicitante" },
+            { data: "endereco" },
+            { data: "zona" },
+            { data: "objeto" },
+            { data: "quantidade" },
+            { data: "mes" },
+            { data: "status" },
+          ],
+          pageLength: 10,
+          lengthMenu: [
+            [10, 25, 50, 100],
+            [10, 25, 50, 100],
+          ],
+          order: [], // sem ordenação inicial
+          language: {
+            decimal: ",",
+            thousands: ".",
+            emptyTable: "Nenhum dado disponível na tabela",
+            info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+            infoEmpty: "Mostrando 0 a 0 de 0 registros",
+            infoFiltered: "(filtrado de _MAX_ registros no total)",
+            lengthMenu: "Mostrar _MENU_ registros",
+            loadingRecords: "Carregando...",
+            processing: "Processando...",
+            search: "Buscar:",
+            zeroRecords: "Nenhum registro encontrado",
+            paginate: {
+              first: "Primeiro",
+              last: "Último",
+              next: "Próximo",
+              previous: "Anterior",
+            },
+            aria: {
+              sortAscending:
+                ": ativar para ordenar a coluna em ordem crescente",
+              sortDescending:
+                ": ativar para ordenar a coluna em ordem decrescente",
+            },
+          },
+        });
+
+        // Recarregar (sem quebrar sua rota)
+        $("#btn-recarregar").on("click", function () {
+          if (tabela && tabela.ajax) tabela.ajax.reload(null, false);
+          else location.reload();
+        });
+
+        // Apagar Tudo (POST na sua rota). Ajuste a URL se necessário.
+        $("#btn-apagar-tudo").on("click", async function () {
+          if (!confirm("Tem certeza que deseja apagar todos os registros?"))
+            return;
+          try {
+            const resp = await fetch("/apagar-tudo", { method: "POST" }); // <-- ajuste se sua rota for diferente
+            if (!resp.ok) throw new Error("Falha ao apagar.");
+            // Recarrega a tabela após apagar
+            if (tabela && tabela.ajax) tabela.ajax.reload(null, true);
+          } catch (e) {
+            alert("Erro ao apagar: " + e.message);
+          }
+        });
+
+        // Importar: o <form> envia para sua rota /importar. Após sucesso, recarrega a tabela.
+        // Se sua rota redireciona, manterá o fluxo normal. Se retornar 204/200, prevenimos o redirect.
+        const form = document.getElementById("form-import");
+        form.addEventListener("submit", async (ev) => {
+          // Se quiser deixar o comportamento padrão (post + redirect), remova este listener inteiro.
+          ev.preventDefault();
+          const fd = new FormData(form);
+          try {
+            const resp = await fetch(form.action, { method: "POST", body: fd });
+            if (!resp.ok) throw new Error("Falha no upload.");
+            // Se sua rota devolve JSON com {ok:true}, pode ler aqui; se devolve 204, só seguir:
+            // const data = await resp.json();
+            // console.log(data);
+            // Recarrega a tabela após importar
+            if (tabela && tabela.ajax) tabela.ajax.reload(null, true);
+          } catch (e) {
+            alert("Erro ao importar: " + e.message);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

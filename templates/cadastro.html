@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>SUTRAM - Cadastro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="{{ url_for('static', filename='style/style.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-amarelo">
+    {% include 'partials/sidebar.html' %}
+
+    <div class="page">
+      <section class="page-card">
+        <h2 class="titulo">Cadastro de Serviços</h2>
+
+        <!-- GRID: formulário (2fr) + lateral (1fr) -->
+        <div class="cadastro-grid">
+          <!-- COLUNA ESQUERDA: FORMULÁRIO -->
+          <div class="cadastro-form">
+            <div class="grid-2">
+              <div>
+                <label>Registro</label>
+                <input type="text" name="registro" />
+              </div>
+              <div>
+                <label>Data Entrada</label>
+                <input
+                  type="date"
+                  name="data_entrada"
+                  value="{{ data_hoje or '' }}"
+                />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Solicitante</label>
+                <input type="text" name="solicitante" />
+              </div>
+              <div>
+                <label>Endereço</label>
+                <input type="text" name="endereco" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Zona</label>
+                <input type="text" name="zona" />
+              </div>
+              <div>
+                <label>Objeto</label>
+                <input type="text" name="objeto" />
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Quantidade</label>
+                <input type="number" name="quantidade" />
+              </div>
+              <div>
+                <label>Mês</label>
+                <input type="text" name="mes" />
+              </div>
+            </div>
+
+            <div>
+              <label>Status</label>
+              <input type="text" name="status" />
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primario">Salvar</button>
+            </div>
+          </div>
+
+          <!-- COLUNA DIREITA: LATERAL (REDES + DICAS) -->
+          <aside class="cadastro-aside">
+            <!-- CARD 1: CANAL E REDES (retângulo vermelho) -->
+            <div class="side-card">
+              <h3 class="subtitulo">Canal e Redes Sociais</h3>
+
+              <!-- Vídeo responsivo (use o seu link/iframe preferido) -->
+              <div class="media">
+                <iframe
+                  src="https://www.youtube.com/embed/-5BABeRjBhE?si=hCUyV1UwDWZffpAy"
+                  title="Canal SUTRAM"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowfullscreen
+                  referrerpolicy="strict-origin-when-cross-origin"
+                ></iframe>
+              </div>
+
+              <nav class="social-links">
+                <a href="#" target="_blank" rel="noopener noreferrer"
+                  >Facebook</a
+                >
+                <span> | </span>
+                <a href="#" target="_blank" rel="noopener noreferrer"
+                  >Instagram</a
+                >
+                <span> | </span>
+                <a href="#" target="_blank" rel="noopener noreferrer"
+                  >Twitter</a
+                >
+              </nav>
+            </div>
+
+            <!-- CARD 2: DICAS (retângulo amarelo) -->
+            <div class="side-card" style="margin-top: 16px">
+              <h3 class="subtitulo">Dicas de Boa Conduta no Trânsito</h3>
+              <ul class="tips">
+                <li>Respeite os limites de velocidade.</li>
+                <li>Use sempre o cinto de segurança.</li>
+                <li>Não use celular ao dirigir.</li>
+                <li>Dê preferência ao pedestre.</li>
+                <li>Mantenha distância segura do veículo à frente.</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

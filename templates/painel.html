@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>SUTRAM - Painel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="{{ url_for('static', filename='style/style.css') }}"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-amarelo">
+    {% include 'partials/sidebar.html' %}
+
+    <div class="page">
+      <section class="page-card">
+        <h2 class="titulo">Painel de Indicadores</h2>
+
+        <!-- Filtros -->
+        <div class="filtros grid-4">
+          <select id="f_zona">
+            <option value="">Todos</option>
+          </select>
+          <select id="f_mes">
+            <option value="">Todos</option>
+          </select>
+          <select id="f_status">
+            <option value="">Todos</option>
+          </select>
+          <div class="flex gap">
+            <button id="btn-aplicar" class="btn btn-primario">Aplicar</button>
+            <button id="btn-limpar" class="btn">Limpar</button>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpis grid-4">
+          <div class="kpi">
+            <div class="kpi-titulo">Total Registros</div>
+            <div class="kpi-valor" id="kpi_total">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-titulo">Total Quantidade</div>
+            <div class="kpi-valor" id="kpi_qtd">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-titulo">Média</div>
+            <div class="kpi-valor" id="kpi_media">0</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-titulo">Tendência</div>
+            <div class="kpi-valor" id="kpi_trend">0%</div>
+          </div>
+        </div>
+
+        <!-- Tipos dos gráficos (linha 1) -->
+        <div class="tipos grid-3">
+          <div>
+            <label>Tipo (Zona):</label>
+            <select id="tipo_zona">
+              <option>Barra</option>
+              <option>Pizza</option>
+              <option>Linha</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo (Mês):</label>
+            <select id="tipo_mes">
+              <option>Barra</option>
+              <option>Pizza</option>
+              <option>Linha</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo (Status):</label>
+            <select id="tipo_status">
+              <option>Barra</option>
+              <option>Pizza</option>
+              <option>Linha</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Linha 1 -->
+        <div class="chart-grid">
+          <div class="card graf"><canvas id="chart_zona"></canvas></div>
+          <div class="card graf"><canvas id="chart_mes"></canvas></div>
+          <div class="card graf"><canvas id="chart_status"></canvas></div>
+        </div>
+
+        <!-- Tipos dos gráficos (linha 2) -->
+        <div class="tipos grid-3" style="margin-top: 16px">
+          <div>
+            <label>Tipo (Funil):</label>
+            <select id="tipo_funil">
+              <option>Funil de atendimento</option>
+              <option>Barras horizontais</option>
+              <option>Pizza</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo (Colunas):</label>
+            <select id="tipo_colunas">
+              <option>Colunas (vertical)</option>
+              <option>Barras horizontais</option>
+              <option>Linha</option>
+              <option>Pizza</option>
+            </select>
+          </div>
+          <div>
+            <label>Tipo (Venn):</label>
+            <select id="tipo_venn">
+              <option>Venn (3 conjuntos)</option>
+              <option>Barras (interseções)</option>
+              <option>Pizza (interseções)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- NOVOS filtros do Venn -->
+        <div class="filtros grid-3" style="margin-top: 8px">
+          <div>
+            <label>Status B (Venn):</label>
+            <select id="venn_status_b"></select>
+          </div>
+          <div>
+            <label>Status C (Venn):</label>
+            <select id="venn_status_c"></select>
+          </div>
+          <div class="flex gap">
+            <small class="nota"
+              >A: Zona mais frequente • B e C: status escolhidos</small
+            >
+          </div>
+        </div>
+
+        <!-- Linha 2 -->
+        <div class="chart-grid" style="margin-top: 8px">
+          <div class="card graf"><canvas id="chart_funil"></canvas></div>
+          <div class="card graf"><canvas id="chart_colunas"></canvas></div>
+          <div class="card graf"><canvas id="chart_medidor"></canvas></div>
+        </div>
+      </section>
+
+      <!-- Mapa -->
+      <section class="page-card bloco-mapa" style="margin-top: 16px">
+        <h2 class="titulo">Mapa de Ocorrências - Ilhéus</h2>
+        <div class="map-container">
+          <iframe
+            src="https://www.google.com/maps/d/embed?mid=1iB3tGVMyLuGTKR4vuF5rLfqtvSSThegl&ehbc=2E312F"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </section>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-funnel@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-venn@3"></script>
+    <script src="{{ url_for('static', filename='script/painel.js') }}"></script>
+  </body>
+</html>
